@@ -38,7 +38,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
         Bundle b = this.getIntent().getExtras();
         if(b!= null){
-            choosefile = b.getParcelable(MainActivity.IMAGE_NAME);
+            choosefile = b.getParcelable(GalleryActivity.IMAGE_NAME);
         }
 
 
