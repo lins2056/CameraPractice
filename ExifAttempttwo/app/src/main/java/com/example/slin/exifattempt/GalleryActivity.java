@@ -1,6 +1,7 @@
 package com.example.slin.exifattempt;
 
 import android.content.Intent;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Environment;
 import android.support.design.widget.FloatingActionButton;
@@ -13,11 +14,13 @@ import android.widget.AdapterView;
 import android.widget.GridView;
 
 import java.io.File;
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 
-public class GalleryActivity extends AppCompatActivity {
+public class GalleryActivity extends AppCompatActivity{
 
     private ArrayList<myImage> myImagePaths = new ArrayList<>();
+    public static ArrayList<myImage> myLATImagePaths = new ArrayList<>();
     private GridView gv;
     private ImageAdapt imageAdapter;
     private int number;
@@ -28,6 +31,9 @@ public class GalleryActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
+
+        myLATImagePaths = myImagePaths;
+        new sortLat().execute(myLATImagePaths);
 
         imageAdapter = new ImageAdapt(this, myImagePaths);
 
@@ -63,20 +69,25 @@ public class GalleryActivity extends AppCompatActivity {
     }
 
     public void sortByLatitude(View v) {
-        sortlat(myImagePaths);
-        gv.setAdapter(new ImageAdapt(this, myImagePaths));
+
+        gv = (GridView) findViewById(R.id.grid);
+        gv.setAdapter(new ImageAdapt(this, myLATImagePaths));
+        Log.d("gallery", "sorted");
+        for(int i = 0; i < myLATImagePaths.size(); i++){
+            Log.d("gallery", ", " + myLATImagePaths.get(i).getFileLat());
+        }
     }
 
 
     public void sortByDate(View v) {
-        myImagePaths.clear();
-
-        File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "S_CAM_PICS");
-        File[] files = directory.listFiles();
-        for (int i = 0; i < files.length; i++) {
-            myImagePaths.add(new myImage(files[i].toString()));
-
-        }
+//        myImagePaths.clear();
+//
+//        File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "S_CAM_PICS");
+//        File[] files = directory.listFiles();
+//        for (int i = 0; i < files.length; i++) {
+//            myImagePaths.add(new myImage(files[i].toString()));
+//
+//        }
 
         gv = (GridView) findViewById(R.id.grid);
         gv.setAdapter(new ImageAdapt(this, myImagePaths));
@@ -84,26 +95,43 @@ public class GalleryActivity extends AppCompatActivity {
 
 
     //quicksorts below
-    public void sortlat(ArrayList<myImage> values) {
+
+}
+
+
+class sortLat extends AsyncTask<ArrayList<myImage>, Void, ArrayList<myImage>>{
+
+    public static ArrayList<myImage> result;
+    int number;
+    @Override
+    protected ArrayList<myImage> doInBackground(ArrayList<myImage>... passing) {
+        result = passing[0];
+        startSort(result);
+        Log.d("gallery", "doneee");
+
+        return result;
+    }
+
+    public void startSort(ArrayList<myImage> values) {
+
         if (values == null || values.size() == 0) {
             return;
         }
         number = values.size();
         quicksortlat(0, number - 1);
 
-        Log.d("gallery", "done lat");
     }
 
     private void quicksortlat(int low, int high) {
         int i = low, j = high;
-        Float pivot = myImagePaths.get(low + (high - low) / 2).getFileLat();
+        Float pivot = result.get(low + (high - low) / 2).getFileLat();
 
         while (i <= j) {
-            while (myImagePaths.get(i).getFileLat() < pivot) ;
+            while (result.get(i).getFileLat() < pivot) ;
             {
                 i++;
             }
-            while (myImagePaths.get(j).getFileLat() > pivot) {
+            while (result.get(j).getFileLat() > pivot) {
                 j--;
             }
             if (i <= j) {
@@ -119,8 +147,15 @@ public class GalleryActivity extends AppCompatActivity {
     }
 
     private void exchange(int i, int j) {
-        myImage temp = myImagePaths.get(i);
-        myImagePaths.set(i, myImagePaths.get(j));
-        myImagePaths.set(j, temp);
+        myImage temp = result.get(i);
+        result.set(i, result.get(j));
+        result.set(j, temp);
     }
+
+
+    protected void onPostExecute(ArrayList<myImage> result){
+        GalleryActivity.myLATImagePaths = result;
+        Log.d("gallery", "shared!!");
+    }
+
 }

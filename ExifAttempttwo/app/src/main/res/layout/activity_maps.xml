@@ -36,5 +36,12 @@
         android:layout_height="400dp"
         tools:context="com.example.slin.exifattempt.MapsActivity" />
 
+    <Button
+        android:id="@+id/button3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:onClick="deletePic"
+        android:text="Delete" />
+
 </LinearLayout>
 
