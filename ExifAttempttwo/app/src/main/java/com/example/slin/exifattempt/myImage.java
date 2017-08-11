@@ -12,6 +12,7 @@ import java.io.IOException;
 
 public class myImage implements Parcelable{
     private String filename;
+    private double dedate;
     private Float fileLat, fileLong;
 
     public myImage(String name) {
@@ -24,6 +25,18 @@ public class myImage implements Parcelable{
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        try {
+            ExifInterface exif = new ExifInterface(filename);
+            String tempdate = exif.getAttribute(ExifInterface.TAG_DATETIME);
+            tempdate = tempdate.replace(":", "");
+            tempdate = tempdate.replace(" ", ".");
+            dedate = Double.parseDouble(tempdate);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
@@ -39,6 +52,7 @@ public class myImage implements Parcelable{
         }
     }
 
+    //getters
     public Float getFileLat() {
         return fileLat;
     }
@@ -50,6 +64,11 @@ public class myImage implements Parcelable{
     public String getFilename() {
         return filename;
     }
+
+    public Double getdeDate(){
+        return dedate;
+    }
+
 
     @Override
     public int describeContents() {

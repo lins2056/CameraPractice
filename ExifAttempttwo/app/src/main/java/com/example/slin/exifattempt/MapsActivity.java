@@ -1,16 +1,19 @@
 package com.example.slin.exifattempt;
 
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.media.ExifInterface;
 import android.media.Image;
 import android.media.ThumbnailUtils;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -43,10 +46,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             choosefile = b.getParcelable(GalleryActivity.IMAGE_NAME);
         }
 
-        if(choosefile.getFilename() == null){
-            File tobe = new File(choosefile.getFilename());
-            tobe.delete();
-        }
         //get reference to the text
         TextView tv = findViewById(R.id.maps_description);
         //get coordinates
@@ -76,8 +75,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
 
     public void deletePic(View v){
+        Toast.makeText(getApplicationContext(), " File Deleted. Head back to Home page. ", Toast.LENGTH_SHORT).show();
         File tobe = new File(choosefile.getFilename());
         tobe.delete();
+        startActivity(new Intent(MapsActivity.this, MainActivity.class));
+
     }
 
     /**
