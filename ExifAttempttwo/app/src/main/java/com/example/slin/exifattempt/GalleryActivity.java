@@ -19,7 +19,7 @@ import java.util.ArrayList;
 
 public class GalleryActivity extends AppCompatActivity {
 
-    private ArrayList<myImage> myImagePaths = new ArrayList<>();
+    static ArrayList<myImage> myImagePaths = new ArrayList<>();
     static ArrayList<myImage> myLATImagePaths = new ArrayList<>();
     private GridView gv;
     private ImageAdapt imageAdapter;
@@ -33,6 +33,8 @@ public class GalleryActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_gallery);
 
+        myImagePaths.clear();
+        myLATImagePaths.clear();
         File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "S_CAM_PICS");
         File[] files = directory.listFiles();
         //File[] files = directory.listFiles();
@@ -89,12 +91,11 @@ public class GalleryActivity extends AppCompatActivity {
 
 
     public void sortByDate(View v) {
-        new sortLat().execute(myImagePaths);
+
+        new sortDate().execute(myImagePaths);
         gv = (GridView) findViewById(R.id.grid);
         gv.setAdapter(imageAdapter);
 
-//        myImagePaths.clear();
-//
 //        File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "S_CAM_PICS");
 //        File[] files = directory.listFiles();
 //        for (int i = 0; i < files.length; i++) {
@@ -166,47 +167,38 @@ class sortLat extends AsyncTask<ArrayList<myImage>, Void, ArrayList<myImage>> {
 
 class sortDate extends AsyncTask<ArrayList<myImage>, Void, ArrayList<myImage>> {
 
-    private ArrayList<myImage> result = new ArrayList<>();
-    int number;
+    private ArrayList<myImage> dated = new ArrayList<>();
 
     @Override
     protected ArrayList<myImage> doInBackground(ArrayList<myImage>... in) {
 
         startSort(in[0]);
-        for (int i = 0; i < result.size(); i++) {
-            Log.d("gallery", " " + result.get(i).getFileLat());
+        for (int i = 0; i < dated.size(); i++) {
+            Log.d("gallery", " " + dated.get(i).getdeDate());
 
         }
-        return result;
+        return dated;
     }
 
     public void startSort(ArrayList<myImage> passed) {
-        result = passed;
-        Log.d("gallery", "inside startSort");
-        Log.d("gallery", passed.size() + " ");
+        dated = passed;
         for (int i = 0; i < passed.size() - 1; i++) {
             int index = i;
             for (int j = i + 1; j < passed.size(); j++) {
-                Log.d("gallery", " " + passed.get(index).getFileLat() + " > " + passed.get(j).getFileLat());
-                if (passed.get(index).getFileLat() > passed.get(j).getFileLat()) {
+                if (passed.get(index).getdeDate() > passed.get(j).getdeDate()) {
                     index = j;
-                    Log.d("gallery", " " + index);
                 }
             }
 
-            myImage larger = result.get(i);
-            result.set(i, result.get(index));
-            result.set(index, larger);
+            myImage larger = dated.get(i);
+            dated.set(i, dated.get(index));
+            dated.set(index, larger);
         }
 
     }
 
-    protected void onPostExecute(ArrayList<myImage> result) {
-        GalleryActivity.myLATImagePaths = result;
-//        for (int i = 0; i < result.size(); i++) {
-//            Log.d("gallery", " " + result.get(i).getFileLat());
-//
-//        }
+    protected void onPostExecute(ArrayList<myImage> dateresult) {
+        GalleryActivity.myImagePaths = dateresult;
     }
 
 
