@@ -37,16 +37,21 @@ public class GalleryActivity extends AppCompatActivity {
         myLATImagePaths.clear();
         File directory = new File(Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES), "S_CAM_PICS");
         File[] files = directory.listFiles();
-        //File[] files = directory.listFiles();
         if (files != null) {
             for (int i = 0; i < files.length; i++) {
-                myImage temp = new myImage(files[i].toString());
-                    myImagePaths.add(temp);
-
-                if(temp.getFileLat() == null ){
-                    (new File(myImagePaths.get(i).getFilename())).delete();
-                    myImagePaths.remove(i);
+                if(files[i].length() == 0){
+                    files[i].delete();
                 }
+                else{
+                    myImage temp = new myImage(files[i].toString());
+                    myImagePaths.add(temp);
+                }
+
+
+//                if(temp.getFileLat() == null ){
+//                    (new File(myImagePaths.get(i).getFilename())).delete();
+//                    myImagePaths.remove(i);
+//                }
             }
 
 
