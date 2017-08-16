@@ -3,6 +3,7 @@ package com.example.slin.exifattempt;
 import android.media.ExifInterface;
 import android.os.Parcel;
 import android.os.Parcelable;
+import android.util.Log;
 
 import java.io.IOException;
 
@@ -31,7 +32,8 @@ public class myImage implements Parcelable{
             String tempdate = exif.getAttribute(ExifInterface.TAG_DATETIME);
             if(tempdate != null){
                 tempdate = tempdate.replace(":", "");
-                tempdate = tempdate.replace(" ", ".");
+                tempdate = tempdate.replace(' ', '.');
+                Log.d("date", tempdate +" ");
                 dedate = Double.parseDouble(tempdate);
             }
 
